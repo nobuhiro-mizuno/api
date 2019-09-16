@@ -1,0 +1,68 @@
+{
+  "server": {
+    "port": 80,
+    "public": "public",
+    "https": {
+      "use": false,
+      "key": "",
+      "cert": ""
+    },
+    "socketIO": true,
+    "session": {
+      "timeout": 30
+    }
+  },
+  "log": {
+    "appenders": {
+      "server": {
+        "type": "file",
+        "filename": "log/server.log",
+        "maxlogSize": 1048576,
+        "backups": 3
+      },
+      "access": {
+        "type": "dateFile",
+        "filename": "log/access.log",
+        "pattern": "-yyyy-MM-dd",
+        "backups": 30
+      },
+      "params": {
+        "type": "file",
+        "filename": "log/params.log",
+        "maxlogSize": 1048576,
+        "backups": 3
+      },
+      "error": {
+        "type": "file",
+        "filename": "log/error.log",
+        "maxlogSize": 1048576,
+        "backups": 3
+      },
+      "console": {
+        "type": "console"
+      }
+    },
+    "categories": {
+      "default": {
+        "appenders": ["console"],
+        "level": "ALL"
+      },
+      "server": {
+        "appenders": ["server", "console"],
+        "level": "ALL"
+      },
+      "access": {
+        "appenders": ["access", "console"],
+        "level": "ALL"
+      },
+      "params": {
+        "appenders": ["params", "console"],
+        "level": "ALL"
+      },
+      "error": {
+        "appenders": ["error", "console"],
+        "level": "ERROR"
+      }
+    }
+  }
+}
