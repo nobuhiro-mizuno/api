@@ -24,7 +24,7 @@
         "type": "dateFile",
         "filename": "log/access.log",
         "pattern": "-yyyy-MM-dd",
-        "backups": 30
+        "backups": 3
       },
       "params": {
         "type": "file",
