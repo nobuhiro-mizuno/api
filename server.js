@@ -1,7 +1,7 @@
 /**
  * Express Quick Starter
  * 
- * @version 1.0.0
+ * @version 1.1.0
  * @auther N.Mizuno
  */
 
@@ -18,7 +18,6 @@ const socketIO = require('socket.io')
 const express = require('express')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
-const bodyParser = require('body-parser')
 
 // utilities
 const fs = require('fs')
@@ -84,9 +83,9 @@ if (cluster.isMaster) {
   // パース設定
   {
     // URLエンコード形式
-    app.use(bodyParser.urlencoded({extended: false}))
+    app.use(express.urlencoded({extended: false}))
     // JSON形式
-    app.use(bodyParser.json())
+    app.use(express.json())
   }
 
   // パラメータログ
