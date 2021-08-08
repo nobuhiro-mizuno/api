@@ -27,7 +27,7 @@ const config = require('config')
 
 // routers
 const router = require('./routes/api')
-const listner = require('./routes/ws')
+const listener = require('./routes/ws')
 
 // ロガーの初期化
 log4js.configure(config.log)
@@ -35,7 +35,7 @@ log4js.configure(config.log)
 // cluster 設定
 cluster.on('exit', function(worker, code, signal) {
   const logger = log4js.getLogger('server')
-  console.error(`worker died with signal`, worker.process.pid);
+  logger.error(`worker died with signal`, worker.process.pid);
   cluster.fork();
 });
 
@@ -67,13 +67,15 @@ if (cluster.isMaster) {
 
     //セッション設定
     app.use(
+      // セッションの保存先のデフォルトはメモリ保持なので
+      // 変更がある場合はライブラリを追加の上、storeにて設定すること
       session({
         secret: 'secret',
         resave: false,
         saveUninitialized: false,
         cookie: {
           httpOnly: true,
-          secure: config.server.https || false,
+          secure: config.server.https.use || false,
           maxAge: config.server.session.timeout * 60 * 1000
         }
       })
@@ -82,7 +84,8 @@ if (cluster.isMaster) {
 
   // パース設定
   {
-    // URLエンコード形式
+    // URLエンコード形式(application/x-www-form-urlencoded)
+    // extendedを有効にすると配列やMAP形式のデータ解析を行う
     app.use(express.urlencoded({extended: false}))
     // JSON形式
     app.use(express.json())
@@ -119,8 +122,8 @@ if (cluster.isMaster) {
 
   // Socket.IO
   if (config.server.socketIO.use) {
-    const io = socketIO.listen(server)
-    io.on('connection', listner(io))
+    const io = socketIO(server)
+    listener(io)
   }
 
   // サーバ起動
