@@ -7,7 +7,9 @@
       "key": "",
       "cert": ""
     },
-    "socketIO": true,
+    "socketIO": {
+      "use": true
+    },
     "session": {
       "timeout": 30
     }
@@ -24,7 +26,7 @@
         "type": "dateFile",
         "filename": "log/access.log",
         "pattern": "-yyyy-MM-dd",
-        "backups": 30
+        "backups": 3
       },
       "params": {
         "type": "file",
@@ -44,23 +46,37 @@
     },
     "categories": {
       "default": {
-        "appenders": ["console"],
+        "appenders": [
+          "console"
+        ],
         "level": "ALL"
       },
       "server": {
-        "appenders": ["server", "console"],
+        "appenders": [
+          "server",
+          "console"
+        ],
         "level": "ALL"
       },
       "access": {
-        "appenders": ["access", "console"],
+        "appenders": [
+          "access",
+          "console"
+        ],
         "level": "ALL"
       },
       "params": {
-        "appenders": ["params", "console"],
+        "appenders": [
+          "params",
+          "console"
+        ],
         "level": "ALL"
       },
       "error": {
-        "appenders": ["error", "console"],
+        "appenders": [
+          "error",
+          "console"
+        ],
         "level": "ERROR"
       }
     }
