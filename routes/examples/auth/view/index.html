@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Authentication Exsamples</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+        dt,dd {
+            margin: 0;
+            padding: 0;
+        }
+        .flex {
+            display: flex;
+            justify-content: stretch;
+            align-items: stretch;
+            flex-grow: 1;
+        }
+        .flex > * {
+            flex-grow  : 1;
+            flex-shrink: 1;
+        }
+        .flex > .flex-fixed{
+            flex-grow  : 0;
+            flex-shrink: 0;
+        }
+        .wi-3{
+            min-width: 3rem;
+        }
+        .xy-center{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .box-s{
+            width: 100px;
+        }
+        .flex.flex-end {
+            justify-content: flex-end;
+        }
+        .sb-s > * + * {
+            margin-left: 0.5rem;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Authentication Example</h1> 
+        <nav>
+            <div id="item-message"></div>
+            <button id="btn-logout" type="button" class="hidden">logout</button>
+        </nav>
+</header>
+    <form id="form-login" method="POST" action="./login">
+        <fieldset class="xy-center box-s">
+            <legend>Login</legend>
+            <dl class="flex">
+                <dt class="flex-fixed wi-3"><label for="userId">Id</label></dt>
+                <dd class="flex"><input type="text" name="userId" id="userId"></dd>
+            </dl>
+            <dl class="flex">
+                <dt class="flex-fixed wi-3"><label for="userPw">Pw</label></dt>
+                <dd class="flex"><input type="password" name="userPw" id="userPw"></dd>
+            </dl>
+            <div class="flex flex-end sb-s">
+                <button class="flex-fixed" type="submit">Login</button>
+                <button class="flex-fixed" type="reset">Reset</button>
+            </div>
+        </fieldset>
+        <script>
+
+        </script>
+    </form>
+    <div id="box-content" class="hidden">
+        <main>
+            <h2>Title</h2>
+            <p>access counter: <span id="item-counter"></span></p>
+            <button id="btn-refleash" type="button">refleash</button>
+        </main>
+    </div>
+    <script>
+        window.addEventListener('load',() => {
+            const formLogin   = document.querySelector('#form-login');
+            const btnLogout   = document.querySelector('#btn-logout');
+            const boxContent  = document.querySelector('#box-content');
+            const itemMessage = document.querySelector('#item-message');
+            const btnRefleash = document.querySelector('#btn-refleash');
+            const itemCounter = document.querySelector('#item-counter');
+
+            //ログイン前
+            {
+                // ログイン時
+                document.addEventListener('login', (e) => {
+                    [formLogin].forEach(e=>e.classList.add('hidden'));
+                    [boxContent, btnLogout].forEach(e=>e.classList.remove('hidden'));
+                    formLogin.reset();
+                })
+
+                // ログイン実行時
+                formLogin.addEventListener('submit',(e) => {
+                    (async () => {
+                        const res =await fetch(formLogin.action, {
+                            method  : formLogin.method,
+                            body    : new URLSearchParams(new FormData(formLogin))
+                        })
+                        const data      = await res.json();
+                        const {message} = data;
+                        if (res.status == 200 && message) {
+                            formLogin.dispatchEvent(new Event('login',　{bubbles:true, cancelable:true}));
+                            itemMessage.innerHTML = message;
+                    } else if(message) {
+                            itemMessage.innerHTML = message;
+                        }
+                    })();
+                    e.preventDefault();
+                });
+                // リセット時
+                formLogin.addEventListener('reset', (e) => {
+                    itemMessage.innerHTML = "";
+                });
+            }
+
+            // ログイン後
+            {
+                // ログアウト時
+                document.addEventListener('logout', (e) => {
+                    [formLogin].forEach(e=>e.classList.remove('hidden'));
+                    [boxContent, btnLogout].forEach(e=>e.classList.add('hidden'));
+                });
+
+                //ログアウト実行時
+                btnLogout.addEventListener('click', (e) => {
+                    (async () => {
+                        const res       = await fetch("./logout", {method  : "GET"});
+                        const data      = await res.json();
+                        const {message} = data;
+                        if (res.status == 200 && message) {
+                            itemMessage.innerHTML = message;
+                            btnLogout.dispatchEvent(new Event('logout',{bubbles:true, cancelable:true}));
+                        } else if(message) {
+                            itemMessage.innerHTML = message;
+                        }
+                    })();
+                });
+                btnRefleash.addEventListener('click', (e) => {
+                    (async () => {
+                        const res       = await fetch("./resource", {method : "GET"})
+                        const data      = await res.json();
+                        const {counter} = data; 
+                        if (res.status == 200 && counter) {
+                            itemCounter.innerHTML = counter;
+                        }
+                    })();
+                })
+            }
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Socket.IO Example</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <ul id="list-message"></ul>
+    <form action="#">
+        <input id="input-message" />
+        <button id="btn-send">Send</button>
+    </form>
+    <script>
+        (() => {
+            const socketIO = io({transports: ['websocket' /**, 'polling' */ ]});
+            const chatIO = io('/chat', {transports: ['websocket' /**, 'polling' */ ]});
+            window.addEventListener('load', () => {
+                const listMessages = document.querySelector('#list-message')
+                const inputMessage = document.querySelector('#input-message');
+                const      btnSend = document.querySelector('#btn-send');
+                btnSend.addEventListener('click', (e) => {
+                    chatIO.emit('message', {message:inputMessage.value});
+                    inputMessage.value = '';
+                    e.preventDefault();
+                });
+                chatIO.on('message', ({message}) => {
+                    const   li = document.createElement('li');
+                    const text = document.createTextNode(message);
+                    li.appendChild(text);
+                    listMessages.appendChild(li);
+                })
+            });
+        })()
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>File Download/Upload Example</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body>
+    <form id="formUpload" method="POST" action="/file-io/api/v1/" enctype="multipart/form-data">
+        <input type="file" name="uploadFile" id="input-file-upload">
+        <button type="submit">Send</button>
+    </form>
+    <script>
+        (() => {
+            window.addEventListener('load', () => {
+                const formUpload = document.querySelector('#formUpload');
+                formUpload.addEventListener('submit', (e) => {
+                    (async () => {
+                        const res =await fetch(formUpload.action, {
+                            method  : formUpload.method,
+                            body    : new FormData(formUpload)
+                        })
+                        const data = await res.blob();
+                        if (res.status == 200) {
+                            const disposition = res.headers.get('Content-disposition') || '';
+                            if (/attachment/.test(disposition)){
+                                const filename = disposition.match(/filename=([^;]+)/).concat(['untitled.dat'])[1]
+                                const a = document.createElement('a');
+                                a.href = URL.createObjectURL(data);
+                                a.style.display = 'none';
+                                a.setAttribute('download', filename);
+                                document.body.appendChild(a);
+                                a.click();
+                                a.remove();
+                            } else{
+                                console.log(res);
+                            }
+                        }
+                    })();
+                    e.preventDefault();
+                });
+            });
+        })()
+    </script>
+</body>
+
+</html>
