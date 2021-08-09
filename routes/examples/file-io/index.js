@@ -1,5 +1,5 @@
 /**
- * File Download / Upload exsample
+ * File Download / Upload example
  * @see https://github.com/expressjs/multer
  */
 const router = require('express').Router()
@@ -18,12 +18,12 @@ const upload = multer({ storage: storage })
 */
 
 router.get('/', function(req, res) {
-    logger.debug('exsamples.file-io.get')
+    logger.debug('examples.file-io.get')
     res.sendFile(__dirname + '/view/index.html')
 });
 
 router.post('/', upload.any()/** upload.single(name) or upload.array(name, limit) */, function(req, res) {
-    logger.debug('exsamples.file-io.post')
+    logger.debug('examples.file-io.post')
     const file = req.files[0];
     res.setHeader('Content-disposition', `attachment; filename=${file.originalname}`);
     res.send(file.buffer.toString());

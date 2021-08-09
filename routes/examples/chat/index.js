@@ -1,5 +1,5 @@
 /**
- * socket.io simple chat exsample
+ * socket.io simple chat example
  */
 const router = require('express').Router()
 const log4js = require('log4js')
